@@ -180,3 +180,10 @@ Commit 5884028: the workflow `check` passed in 5 min 53 s on a clean Linux machi
 ## 13. L29 count-model comparison (David's decision, 2026-11-08)
 
 Added section 5b to `lessons/L29_spatial_autocorrelation_regression.R`: a quasi-Poisson model with a log(population) offset, printed as rate ratios next to the linear and spatial models, plus Moran's I of its Pearson residuals. Result on the shipped areas: PM2.5 rate ratio 1.04 (1.01 to 1.06), deprivation 1.24 (1.16 to 1.32); planted values exp(0.04) = 1.04 and exp(0.25) = 1.28. Test added: over 60 simulated area sets the model recovers the planted log rate ratios. The "try this" tasks and the course content were not changed (they still compare OLS and SEM).
+
+## 14. Decisions from David (2026-11-08)
+
+- Package versions: keep the current setup (latest CRAN versions by default; `renv::restore()` documented as the exact route). No change.
+- L14: soften the course notes ("a score learned in one group may be less accurate in another" to say the gap can be small and hard to see in small samples, which is why intervals are reported). To be edited in the course content by David; no `content_*.py` was touched here.
+- L29: quasi-Poisson comparison added (section 13).
+- Quarto on this Mac: pending (depends on whether David will render reports locally).
