@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       R_KEEP_PKG_SOURCE: yes
+      CESGEN_ARTIFACT_DIR: ${{ runner.temp }}/rendered-reports
     steps:
       - uses: actions/checkout@v4
 
@@ -37,3 +38,11 @@ jobs:
 
       - name: Run the tests
         run: Rscript -e 'testthat::test_dir("tests/testthat")'
+
+      - name: Keep the rendered reports to read them
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-reports
+          path: ${{ runner.temp }}/rendered-reports
+          if-no-files-found: warn

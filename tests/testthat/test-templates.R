@@ -10,7 +10,14 @@ render_template_copy <- function(rel_path) {
   file.copy(list.files(file.path(repo_root, "data-sim", "out"), full.names = TRUE),
             file.path(tmp, "data-sim", "out"), recursive = TRUE)
   quarto::quarto_render(file.path(tmp, rel_path), quiet = TRUE)
-  sub("[.]qmd$", ".html", file.path(tmp, rel_path))
+  html <- sub("[.]qmd$", ".html", file.path(tmp, rel_path))
+  # In CI the rendered reports are kept as artefacts so that a person can read them
+  keep <- Sys.getenv("CESGEN_ARTIFACT_DIR")
+  if (nzchar(keep) && file.exists(html)) {
+    dir.create(keep, showWarnings = FALSE, recursive = TRUE)
+    file.copy(html, file.path(keep, basename(html)), overwrite = TRUE)
+  }
+  html
 }
 
 test_that("the Quarto report template renders", {

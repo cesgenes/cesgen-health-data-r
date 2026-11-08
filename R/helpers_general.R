@@ -67,7 +67,11 @@ generator_fingerprint <- function() {
 
 #' Make sure the simulated data exist and were made by the current generator code.
 #' If the folder is missing, incomplete, or was made by older generator code, it is rebuilt.
-ensure_sim_data <- function(dir = "data-sim/out", seed = 2026, quiet = FALSE) {
+ensure_sim_data <- function(dir = "data-sim/out", quiet = FALSE) {
+  # The generator always writes to data-sim/out with its own fixed seed (2026).
+  if (!identical(dir, "data-sim/out")) {
+    stop("ensure_sim_data() only supports the default folder \"data-sim/out\".", call. = FALSE)
+  }
   marker <- file.path(dir, "patients_clean.csv")
   stamp <- file.path(dir, ".generator_stamp")
   current <- file.exists(marker) && file.exists(stamp) &&

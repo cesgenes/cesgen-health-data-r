@@ -9,7 +9,7 @@
 
 ## Quick start / Primeros pasos
 
-1. Install R (4.3 or later) and RStudio. / Instala R (4.3 o posterior) y RStudio.
+1. Install R (4.3 or later; the course was verified with R 4.6.1) and RStudio. / Instala R (4.3 o posterior; el curso se ha verificado con R 4.6.1) y RStudio.
 2. Open `cesgen-health-data-r.Rproj` in RStudio. Always run scripts from the repository root. / Abre la carpeta como proyecto y ejecuta siempre desde la raíz.
 3. Install the packages: `source("install_packages.R")`.
 3b. Optional, exact versions: `install.packages("renv"); renv::restore()` uses `renv.lock` (versions used to verify the course). `install_packages.R` installs the latest versions instead. / Opcional, versiones exactas: `renv::restore()` usa `renv.lock`; `install_packages.R` instala las últimas versiones.

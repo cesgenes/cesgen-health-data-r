@@ -16,7 +16,7 @@ test_that("planted PH01, PH03 and PH05 are recovered after Bonferroni in a large
 
 test_that("under the null, p-values are calibrated and the false-positive rate is near 5 %", {
   set.seed(20)
-  p <- replicate(60, {
+  p <- replicate(150, {
     outcome <- rbinom(1000, 1, 0.07)
     vapply(runif(40, 0.05, 0.30), function(prev) {
       exposure <- rbinom(1000, 1, prev)
@@ -27,9 +27,11 @@ test_that("under the null, p-values are calibrated and the false-positive rate i
   expect_lt(mean(p < 0.05), 0.065)
   expect_gt(mean(p < 0.50), 0.45)
   expect_lt(mean(p < 0.50), 0.55)
-  # With Bonferroni the chance of any false positive in a study stays at or below about 5 %
+  # With Bonferroni the chance of any false positive in a study is about 5 %. With 150 studies the
+  # number of studies with a false positive is Binomial(150, 0.05); allow up to its 99.99th percentile.
   any_fp <- apply(p, 2, function(x) any(p.adjust(x, "bonferroni") < 0.05))
-  expect_lte(mean(any_fp), 0.15)
+  expect_lte(sum(any_fp), qbinom(0.9999, 150, 0.05))
+  expect_gte(sum(any_fp), qbinom(0.0001, 150, 0.05))
 })
 
 test_that("95 % Wald intervals from tidy_or cover the true odds ratio about 95 % of the time", {
@@ -125,6 +127,33 @@ test_that("a quasi-Poisson model with offset recovers the planted rate ratios on
              data = a, family = quasipoisson))[c("pm25", "deprivation")]
   }, numeric(2)))
   # planted: log rate ratio 0.04 per unit of pm25 and 0.25 per unit of the deprivation index
-  expect_equal(mean(est[, "pm25"]), 0.04, tolerance = 0.25)
-  expect_equal(mean(est[, "deprivation"]), 0.25, tolerance = 0.1)
+  # Monte Carlo standard error of each mean is below 0.004, so 0.015 is about four standard errors
+  expect_lt(abs(mean(est[, "pm25"]) - 0.04), 0.015)
+  expect_lt(abs(mean(est[, "deprivation"]) - 0.25), 0.015)
+})
+
+test_that("L21 corrections: p_bonferroni and p_bh are the adjusted p-values over the tests run", {
+  f <- lesson_functions("lessons/L21_phewas_run.R", c("run_phewas", "add_corrections"))
+  suppressMessages(library(purrr)); suppressMessages(library(dplyr))
+  env <- list2env(list(map_dfr = purrr::map_dfr, tidy_or = tidy_or), parent = globalenv())
+  environment(f$run_phewas) <- env
+  environment(f$add_corrections) <- env
+  e <- simulate_ehr(3000, "A", 2026)
+  wide <- cbind(e$patients[c("sex", "age", "ade")], as.data.frame(pheno_matrix(e)))
+  res <- f$add_corrections(f$run_phewas(wide, e$phenotypes$phenotype_id), e$phenotypes)
+  ok <- !is.na(res$p_value)
+  k <- sum(ok)
+  expect_gt(k, 20)
+  expect_equal(res$p_bonferroni[ok], pmin(1, res$p_value[ok] * k))        # Bonferroni by hand
+  expect_equal(res$p_bh[ok], p.adjust(res$p_value[ok], method = "BH"))
+  expect_true(all(res$p_bonferroni[ok] >= res$p_bh[ok] - 1e-12))
+  expect_true(any(res$p_bonferroni[ok] > res$p_value[ok]))                 # corrected, not raw
+  expect_true(all(is.na(res$p_bonferroni[!ok])) && all(is.na(res$p_bh[!ok])))
+  # hand-made table: the 3 tests run are corrected with 3, the untested row stays NA
+  tab <- data.frame(phenotype_id = c("PH01", "PH02", "PH03", "PH04"), or = c(2, 1.1, 1.5, NA),
+                    lower = c(1.2, 0.8, 1.1, NA), upper = c(3.3, 1.5, 2.0, NA),
+                    p_value = c(0.001, 0.4, 0.03, NA))
+  out <- f$add_corrections(tab, e$phenotypes)
+  expect_equal(out$p_bonferroni, c(0.003, 1, 0.09, NA))
+  expect_equal(out$p_bh, c(0.003, 0.4, 0.045, NA))
 })

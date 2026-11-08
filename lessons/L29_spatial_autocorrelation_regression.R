@@ -135,6 +135,9 @@ pois_tab$upper <- exp(pois_tab$estimate + 1.96 * pois_tab$se)
 print(pois_tab, digits = 3)
 print(moran_summary(residuals(pois, type = "pearson"), lw, "Quasi-Poisson residuals"))
 stopifnot(all(is.finite(pois_tab$estimate)))
+# Limit: this is a comparison model, not a spatial model of counts. Its residuals can still be
+# spatially autocorrelated (Moran's I above); the spatial error and lag models handle that, but
+# only for the log rate.
 # The linear model on the log rate and the count model should tell a similar story here; the
 # count model is the one that matches how a count of cases is produced, and it needs no 0.5.
 

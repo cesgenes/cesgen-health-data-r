@@ -110,6 +110,8 @@ All scripts run from the repository root in a clean process with `Rscript --vani
 
 ## 4. Tests
 
+Scope. The tests cover the shared helpers, the generators, selected functions defined in lessons 14, 21, 23, 28, 32 and 40, the template package and the report templates. The other lessons are only smoke-tested by `tests/run_all_lessons.R` (the script finishes without error with the current seed); that does not check their numbers or interpretation. The mutation check below supports only the claims it names.
+
 `testthat::test_dir("tests/testthat")`: 94 expectations pass, 1 skipped (Quarto render, tool not installed), 0 fail. About 45 s, of which about 35 s is the `devtools::check()` of the package copy.
 
 | File | What it protects |
@@ -192,3 +194,9 @@ Added section 5b to `lessons/L29_spatial_autocorrelation_regression.R`: a quasi-
 
 - [x] **Quarto templates in CI (done 2026-11-08):** both `templates/report_template.qmd` and `templates/final_project/report_skeleton.qmd` are rendered by the GitHub Actions test (run 42480943777: 123 expectations passed, 0 skipped). Quarto is still not installed on David's Mac (download about 226 MB). Before publishing the course, optionally look at the two rendered HTML files by eye: install Quarto locally (`brew install --cask quarto`) or render them from a downloaded CI artefact.
 - [ ] **L14 course notes:** soften the "may be less accurate in another group" note (suggested sentence in the 2026-11-08 reply: "In a small sample the difference can be hard to see: that is why the accuracy is reported with its interval."). Edit in the course content, not in this repository.
+
+## 16. Adversarial review (round 3) - changes applied
+
+Full assessment in `reviews/VALORACION_informe_codex.md` (last section). Applied on David's approval: a test that runs `run_phewas()` and `add_corrections()` and checks the Bonferroni and BH p-values against hand calculations (before this, replacing `p.adjust` by raw p-values in L21 made no test fail); absolute, Monte Carlo based bounds for the quasi-Poisson recovery test (before, changing the planted deprivation effect from 0.25 to 0.20 went unnoticed); a binomial bound for the Bonferroni false-positive check (150 studies); `ensure_sim_data()` no longer has a `seed` argument and refuses a non-default `dir`; a comment in L29 that the quasi-Poisson model is a comparison with possibly autocorrelated residuals; the rendered Quarto reports are uploaded as GitHub artefacts (`rendered-reports`); README states R 4.6.1 was the verified version; `tests/validation/phewas_min_events_fwer.R` keeps the simulation behind the choice of 3 events (family-wise error 0.048 with the rule, 0.044 without).
+
+Still open: A3 (L25 grid at the false origin of EPSG:27700, 100 m tolerance; needs David's decision), the L29 course sentence on residual autocorrelation (course content), the R 4.3 / macOS / `renv::restore()` CI matrix (policy), and the limits in M5 (validation in favourable conditions).
