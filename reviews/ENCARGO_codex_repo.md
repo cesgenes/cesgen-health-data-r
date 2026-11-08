@@ -14,7 +14,7 @@
 3. **Claims versus output.** Do the numbers and statements in slides, notes and "try this" tasks match what the scripts actually print or plot? List every mismatch.
 4. **Genetics and health facts in code and comments.** Anchor variants (rsID, chromosome, GRCh37 position, alleles), ICD codes, terminology, statements about databases (ClinVar, ACMG list, GWAS Catalog, OMOP) and regulation. Verify on the internet what you can; list what you could not verify.
 5. **Privacy and safety.** Any path, file, example or prompt that could lead a learner to upload or expose real health or genetic data; data accidentally committed; secrets; scripts that write outside the project or to the user's home by default.
-6. **Package-development material (lessons 36-40).** `templates/mini_health_package` must pass `devtools::document()`, `test()` and `check()`; the statements about PITS must agree with the PITS repository (read-only: `/Users/daviddelorenzo/Documents/ClaudeCowork/PROJECTS/GitHub/PITS`).
+6. **Package-development material (lessons 36-40).** `templates/mini_health_package` must pass `devtools::document()`, `test()` and `check()`; the statements about PITS must agree with the PITS repository (read-only: `a local copy of the PITS repository, kept outside this repository`).
 7. **Teaching quality.** Beginner readability, comments, naming, exercises that are doable in 10-20 minutes with the stated expected result, solutions that really solve the exercise, runtime of each script (flag anything over 60 s).
 8. **Reproducibility and tooling.** renv lock, `.gitignore`, CI file, tests that would catch real regressions versus tests that only check that code runs.
 
