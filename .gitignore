@@ -6,5 +6,7 @@
 .Rproj.user/
 data-sim/out/
 output/
-renv/
+renv/library/
+renv/staging/
+renv/local/
 renv/library/

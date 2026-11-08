@@ -3,7 +3,7 @@
 **EN** · Code that accompanies the CESGEN online course *Health Data Analysis with R* (40 lessons, 6 modules).
 **ES** · Código que acompaña al curso online de CESGEN *Análisis de datos de salud con R* (40 lecciones, 6 módulos).
 
-> **Status / Estado:** first local version, 08/11/2026. The scripts have been written but **not yet executed**; see `CHECKLOG.md` once the test pass is done. / Primera versión local, 08/11/2026. Los scripts están escritos pero **aún no se han ejecutado**; ver `CHECKLOG.md` cuando se haga la prueba.
+> **Status / Estado:** 08/11/2026. All 70 lesson scripts and solutions have been run in R 4.6.1 and the automated tests pass; an independent review is in progress. See `CHECKLOG.md`. / Los 70 scripts y soluciones se han ejecutado en R 4.6.1 y las pruebas automáticas pasan; hay una revisión independiente en curso. Ver `CHECKLOG.md`.
 > **Data / Datos:** everything in this repository is **simulated for teaching purposes**. There are no data from real people. / Todo lo de este repositorio son **datos simulados con fin didáctico**. No hay datos de personas reales.
 > Educational material; it does not replace a health professional. / Material formativo; no sustituye a un profesional sanitario.
 
