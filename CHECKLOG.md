@@ -140,7 +140,7 @@ None of the `content_*.py` files was edited.
 
 ## 7. Open issues
 
-1. Quarto is not installed on this Mac. The Quarto render test of `templates/report_template.qmd` ran and passed in GitHub Actions (see section 12); `templates/final_project/report_skeleton.qmd` is not covered by the test.
+1. Quarto is not installed on this Mac. Both `.qmd` templates are rendered and tested in GitHub Actions (sections 12 and 15); nobody has yet looked at the rendered HTML by eye.
 2. `ensure_sim_data()` only checks that `patients_clean.csv` exists. After a change to a generator, stale files in `data-sim/out/` are not regenerated (this happened with the rs1805007 fix and made L09 fail until the folder was deleted). Proposed fix: delete `data-sim/out/` after changing a generator, or add a seed and version stamp. Not changed.
 3. Lintr style findings (662) are not fixed.
 4. `renv::init()` was not run (disk space); only the lockfile exists.
@@ -190,5 +190,5 @@ Added section 5b to `lessons/L29_spatial_autocorrelation_regression.R`: a quasi-
 
 ## 15. To do before publishing the course
 
-- [ ] **Quarto:** David decided on 2026-11-08 to skip installing Quarto for now. Before the course is published, render both templates with the Quarto command-line tool and check the HTML (`templates/report_template.qmd`, already rendered by the GitHub Actions run; `templates/final_project/report_skeleton.qmd`, not rendered or tested anywhere yet). Options: install Quarto locally (`brew install --cask quarto`), or add the skeleton to the render test so that GitHub Actions covers it.
+- [x] **Quarto templates in CI (done 2026-11-08):** both `templates/report_template.qmd` and `templates/final_project/report_skeleton.qmd` are rendered by the GitHub Actions test (run 42480943777: 123 expectations passed, 0 skipped). Quarto is still not installed on David's Mac (download about 226 MB). Before publishing the course, optionally look at the two rendered HTML files by eye: install Quarto locally (`brew install --cask quarto`) or render them from a downloaded CI artefact.
 - [ ] **L14 course notes:** soften the "may be less accurate in another group" note (suggested sentence in the 2026-11-08 reply: "In a small sample the difference can be hard to see: that is why the accuracy is reported with its interval."). Edit in the course content, not in this repository.
