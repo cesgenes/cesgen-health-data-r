@@ -187,3 +187,8 @@ Added section 5b to `lessons/L29_spatial_autocorrelation_regression.R`: a quasi-
 - L14: soften the course notes ("a score learned in one group may be less accurate in another" to say the gap can be small and hard to see in small samples, which is why intervals are reported). To be edited in the course content by David; no `content_*.py` was touched here.
 - L29: quasi-Poisson comparison added (section 13).
 - Quarto on this Mac: pending (depends on whether David will render reports locally).
+
+## 15. To do before publishing the course
+
+- [ ] **Quarto:** David decided on 2026-11-08 to skip installing Quarto for now. Before the course is published, render both templates with the Quarto command-line tool and check the HTML (`templates/report_template.qmd`, already rendered by the GitHub Actions run; `templates/final_project/report_skeleton.qmd`, not rendered or tested anywhere yet). Options: install Quarto locally (`brew install --cask quarto`), or add the skeleton to the render test so that GitHub Actions covers it.
+- [ ] **L14 course notes:** soften the "may be less accurate in another group" note (suggested sentence in the 2026-11-08 reply: "In a small sample the difference can be hard to see: that is why the accuracy is reported with its interval."). Edit in the course content, not in this repository.
