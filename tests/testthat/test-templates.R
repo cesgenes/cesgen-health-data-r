@@ -1,14 +1,30 @@
+# Render a template in a temporary copy that keeps the repository layout (the templates look for
+# R/helpers_general.R by walking up from their own folder).
+render_template_copy <- function(rel_path) {
+  tmp <- tempfile("qmd"); dir.create(tmp)
+  dir.create(file.path(tmp, dirname(rel_path)), recursive = TRUE)
+  file.copy(file.path(repo_root, rel_path), file.path(tmp, rel_path))
+  dir.create(file.path(tmp, "R"))
+  file.copy(list.files(file.path(repo_root, "R"), full.names = TRUE), file.path(tmp, "R"))
+  dir.create(file.path(tmp, "data-sim", "out"), recursive = TRUE)
+  file.copy(list.files(file.path(repo_root, "data-sim", "out"), full.names = TRUE),
+            file.path(tmp, "data-sim", "out"), recursive = TRUE)
+  quarto::quarto_render(file.path(tmp, rel_path), quiet = TRUE)
+  sub("[.]qmd$", ".html", file.path(tmp, rel_path))
+}
+
 test_that("the Quarto report template renders", {
   skip_if_not_installed("quarto")
   skip_if(is.null(quarto::quarto_path()), "Quarto command-line tool not installed")
-  tmp <- tempfile("qmd"); dir.create(tmp)
-  file.copy(file.path(repo_root, "templates", "report_template.qmd"), tmp)
-  dir.create(file.path(tmp, "R")); dir.create(file.path(tmp, "data-sim", "out"), recursive = TRUE)
-  file.copy(list.files(file.path(repo_root, "R"), full.names = TRUE), file.path(tmp, "R"))
-  file.copy(list.files(file.path(repo_root, "data-sim", "out"), full.names = TRUE, recursive = FALSE),
-            file.path(tmp, "data-sim", "out"))
-  quarto::quarto_render(file.path(tmp, "report_template.qmd"), quiet = TRUE)
-  expect_true(file.exists(file.path(tmp, "report_template.html")))
+  expect_true(file.exists(render_template_copy("templates/report_template.qmd")))
+})
+
+test_that("the final-project skeleton renders as it is", {
+  skip_if_not_installed("quarto")
+  skip_if(is.null(quarto::quarto_path()), "Quarto command-line tool not installed")
+  html <- render_template_copy("templates/final_project/report_skeleton.qmd")
+  expect_true(file.exists(html))
+  expect_match(paste(readLines(html, warn = FALSE), collapse = " "), "Simulated data for teaching purposes")
 })
 
 test_that("mini_health_package passes document(), test() and check() in a copy", {
