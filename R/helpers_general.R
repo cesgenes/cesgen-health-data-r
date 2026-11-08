@@ -58,11 +58,23 @@ k_anonymity <- function(df, quasi_identifiers) {
   list(k = min(counts), n_groups = length(counts), n_unique = sum(counts == 1))
 }
 
-#' Make sure the simulated data exist; generate them if not
+#' Fingerprint of the files that generate the simulated data (a change in any of them changes it)
+generator_fingerprint <- function() {
+  files <- sort(c(list.files("R", pattern = "^simulate_.*[.]R$", full.names = TRUE),
+                  list.files("data-sim", pattern = "[.]R$", full.names = TRUE)))
+  paste(unname(tools::md5sum(files)), collapse = "")
+}
+
+#' Make sure the simulated data exist and were made by the current generator code.
+#' If the folder is missing, incomplete, or was made by older generator code, it is rebuilt.
 ensure_sim_data <- function(dir = "data-sim/out", seed = 2026, quiet = FALSE) {
   marker <- file.path(dir, "patients_clean.csv")
-  if (!file.exists(marker)) {
+  stamp <- file.path(dir, ".generator_stamp")
+  current <- file.exists(marker) && file.exists(stamp) &&
+    identical(readLines(stamp, warn = FALSE), generator_fingerprint())
+  if (!current) {
     if (!quiet) message("Generating simulated data in ", dir, " ...")
+    unlink(dir, recursive = TRUE)
     source("data-sim/00_generate_all.R", local = new.env())
   }
   invisible(dir)

@@ -155,3 +155,9 @@ Rscript -e 'source("data-sim/00_generate_all.R")'
 Rscript tests/run_all_lessons.R
 Rscript -e 'testthat::test_dir("tests/testthat")'
 ```
+
+## 9. Review round 1 (Codex) - changes
+
+Full assessment in `reviews/VALORACION_informe_codex.md`. Applied: `run_phewas()` now excludes strata with fewer than 3 events or non-events per cell and reports a `status` column (site A runs 28 tests, Bonferroni threshold 0.00179); `ensure_sim_data()` rebuilds stale data using a generator fingerprint; `00_generate_all.R` sources `R/` locally; duplicate `.gitignore` entry removed; `.github/workflows/check.yaml` added (untested until pushed); `riskkit` check log saved. After these changes: 70/70 scripts pass, 112 test expectations pass, 1 skipped (Quarto). Deferred to David: quasi-Poisson comparison in L29/L30.
+
+Content note from the change: the L21 text says PH03 and PH05 "may be missed in one centre". With the new rule PH03 passes Bonferroni in site A alone and PH05 does not; the pooled analysis finds PH01 and PH03. The wording remains accurate.

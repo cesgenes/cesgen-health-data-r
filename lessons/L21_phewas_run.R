@@ -79,21 +79,35 @@ cat("Matrix site A:", nrow(wide_a), "patients x", length(phenotype_ids), "phenot
 # -----------------------------------------------------------------------------
 # 3. One logistic regression per phenotype: ade ~ phenotype + age + sex
 # -----------------------------------------------------------------------------
-run_phewas <- function(wide, phenotype_ids, min_exposed = 10) {
+# A test is run only if there are enough exposed patients AND enough events and non-events in
+# both groups; otherwise the odds ratio is not estimable (zero cells give 0 or infinity).
+# The 'status' column says why a phenotype was not tested.
+run_phewas <- function(wide, phenotype_ids, min_exposed = 10, min_events = 3) {
   map_dfr(phenotype_ids, function(ph) {
     d <- data.frame(ade = wide$ade, x = wide[[ph]], age = wide$age, sex = wide$sex)
     n_exposed <- sum(d$x == 1)
     events_exposed <- sum(d$x == 1 & d$ade == 1)
-    if (n_exposed < min_exposed) {                    # too few cases: do not fit, report NA
-      out <- data.frame(term = "x", or = NA_real_, lower = NA_real_, upper = NA_real_,
-                        p_value = NA_real_)
+    cells <- c(events_exposed, n_exposed - events_exposed,
+               sum(d$x == 0 & d$ade == 1), sum(d$x == 0 & d$ade == 0))
+    out <- data.frame(term = "x", or = NA_real_, lower = NA_real_, upper = NA_real_,
+                      p_value = NA_real_)
+    status <- "fitted"
+    if (n_exposed < min_exposed) {
+      status <- "too few exposed"
+    } else if (min(cells) < min_events) {
+      status <- "too few events or non-events"
     } else {
       fit <- suppressWarnings(glm(ade ~ x + age + sex, data = d, family = binomial()))
       out <- tidy_or(fit, "x")
+      if (!fit$converged || !all(is.finite(c(out$or, out$lower, out$upper)))) {
+        out[, c("or", "lower", "upper", "p_value")] <- NA_real_
+        status <- "model did not converge"
+      }
     }
     out$phenotype_id <- ph
     out$n_exposed <- n_exposed
     out$events_exposed <- events_exposed
+    out$status <- status
     out
   })
 }

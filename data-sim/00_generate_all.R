@@ -2,7 +2,7 @@
 #   source("data-sim/00_generate_all.R")
 # Everything is invented for teaching purposes. A fixed seed makes the output reproducible.
 
-invisible(lapply(list.files("R", pattern = "\\.R$", full.names = TRUE), source))
+for (f in list.files("R", pattern = "\\.R$", full.names = TRUE)) source(f, local = TRUE)
 out <- "data-sim/out"
 dir.create(out, showWarnings = FALSE, recursive = TRUE)
 seed <- 2026
@@ -48,4 +48,5 @@ if (requireNamespace("sf", quietly = TRUE)) {
 } else {
   message("Package 'sf' not installed: skipping the spatial data (needed from lesson 25).")
 }
+writeLines(generator_fingerprint(), file.path(out, ".generator_stamp"))   # lets ensure_sim_data() detect stale data
 message("Simulated data written to ", out)

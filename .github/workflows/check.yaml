@@ -1,0 +1,39 @@
+# Runs the data generator, every lesson script and the tests on a clean machine.
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      R_KEEP_PKG_SOURCE: yes
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System libraries for the spatial packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev libsqlite3-dev libcurl4-openssl-dev libssl-dev libxml2-dev
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Install the course packages
+        run: Rscript -e 'source("install_packages.R")'
+
+      - name: Generate the simulated data
+        run: Rscript -e 'source("data-sim/00_generate_all.R")'
+
+      - name: Run every lesson script and solution
+        run: Rscript tests/run_all_lessons.R
+
+      - name: Run the tests
+        run: Rscript -e 'testthat::test_dir("tests/testthat")'
