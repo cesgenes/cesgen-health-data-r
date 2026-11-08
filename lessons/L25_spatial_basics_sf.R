@@ -54,9 +54,11 @@ centroids_orig <- sf::st_coordinates(sf::st_centroid(sf::st_geometry(areas)))
 centroids_back <- sf::st_coordinates(sf::st_centroid(sf::st_geometry(areas_back)))
 max_shift <- max(abs(centroids_orig - centroids_back))
 cat("Largest round-trip shift (metres):", signif(max_shift, 3), "\n")
-# The grid starts at the false origin of the British National Grid, outside the area where the
-# accurate OSTN15 grid shift applies, so PROJ falls back to an approximate transformation
-# and a round trip can move points by tens of metres. That is still small against 1 km cells.
+# The simulated grid is a fictional place: it sits at the false origin of the British National
+# Grid, outside the area where the accurate OSTN15 grid shift applies, so PROJ falls back to an
+# approximate transformation and a round trip can move points by tens of metres (about 73 m here).
+# That is small against 1 km cells. For real data inside Great Britain the shift is below 1 m, so
+# a tolerance this wide would hide a real error there.
 stopifnot(max_shift < 100)
 
 # 5. Relabelling is not transforming ---------------------------------------------
