@@ -1,7 +1,8 @@
 # Installs the packages used in the course. Run once from the repository root:
 #   source("install_packages.R")
-# Optional: use renv for a locked, reproducible library:
-#   install.packages("renv"); renv::init(); source("install_packages.R"); renv::snapshot()
+# This installs the latest CRAN versions, so results can differ slightly from the versions used to
+# verify the course (R 4.6.1; see CHECKLOG.md). To install exactly those versions, use the
+# lockfile instead:  install.packages("renv"); renv::restore()
 
 pkgs <- c(
   # core tidyverse pieces

@@ -76,3 +76,15 @@ test_that("anchor variants carry the dbSNP GRCh37 coordinates checked on 2026-11
   expect_equal(a$chromosome[a$rsid == "rs429358"], "19")
   expect_equal(nrow(a), 6)
 })
+
+test_that("generators reject sizes that cannot work, with a clear message", {
+  expect_error(simulate_consumer_file(tempfile(), n_snps = 5), "at least 6")
+  expect_error(simulate_population(n = 10, n_snps = 7), "at least 8")
+  skip_if_not_installed("sf")
+  expect_error(simulate_areas(1, 1), "at least 2")
+  # the smallest valid calls still work
+  f <- tempfile(); simulate_consumer_file(f, n_snps = 6, seed = 1)
+  expect_equal(sum(!startsWith(readLines(f), "#")), 6)
+  expect_equal(nrow(simulate_population(n = 5, n_snps = 8, seed = 1)$pheno), 5)
+  expect_equal(nrow(simulate_areas(2, 2, seed = 1)), 4)
+})

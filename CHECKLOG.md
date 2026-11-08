@@ -161,3 +161,15 @@ Rscript -e 'testthat::test_dir("tests/testthat")'
 Full assessment in `reviews/VALORACION_informe_codex.md`. Applied: `run_phewas()` now excludes strata with fewer than 3 events or non-events per cell and reports a `status` column (site A runs 28 tests, Bonferroni threshold 0.00179); `ensure_sim_data()` rebuilds stale data using a generator fingerprint; `00_generate_all.R` sources `R/` locally; duplicate `.gitignore` entry removed; `.github/workflows/check.yaml` added (untested until pushed); `riskkit` check log saved. After these changes: 70/70 scripts pass, 112 test expectations pass, 1 skipped (Quarto). Deferred to David: quasi-Poisson comparison in L29/L30.
 
 Content note from the change: the L21 text says PH03 and PH05 "may be missed in one centre". With the new rule PH03 passes Bonferroni in site A alone and PH05 does not; the pooled analysis finds PH01 and PH03. The wording remains accurate.
+
+## 10. Review round 2 (Codex, fresh session) - changes
+
+No High finding (`reviews/REVISION_CODEX_repo_20261108_ronda2.md`; assessment at the end of `reviews/VALORACION_informe_codex.md`). Applied: size validation with clear messages in `simulate_consumer_file()`, `simulate_population()` and `simulate_areas()`; note on multi-allelic anchors; `install_packages.R` and README explain the latest-versions path versus `renv::restore()`. Final state before pushing: 70/70 scripts pass, 118 test expectations pass, 1 skipped (Quarto render).
+
+## 11. Open questions for David
+
+1. Quarto is not installed here: install it (Homebrew cask `quarto`) so that the two `.qmd` templates can be rendered and tested?
+2. L29/L30: add a quasi-Poisson-with-offset comparison next to the linear and spatial models (recommended), keep as is, or add only a limitation note?
+3. Pin package versions for learners with `renv::restore()` as the main route, or keep latest versions (current)?
+4. L14: soften "may be less accurate" or plant a real effect difference between groups (section 6)?
+5. The GitHub workflow has not run yet; it will run on the first push and may need adjustments.

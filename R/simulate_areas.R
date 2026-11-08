@@ -5,6 +5,7 @@
 #' @return an sf object with columns area_id, pm25, deprivation, population, cases, rate_per_1000
 simulate_areas <- function(nx = 14, ny = 14, seed = 2026) {
   stopifnot(requireNamespace("sf", quietly = TRUE))
+  if (nx < 2 || ny < 2) stop("nx and ny must be at least 2.", call. = FALSE)
   set.seed(seed)
   grid <- sf::st_make_grid(sf::st_bbox(c(xmin = 0, ymin = 0, xmax = nx * 1000, ymax = ny * 1000), crs = sf::st_crs(27700)),
                            n = c(nx, ny))

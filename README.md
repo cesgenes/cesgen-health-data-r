@@ -12,6 +12,7 @@
 1. Install R (4.3 or later) and RStudio. / Instala R (4.3 o posterior) y RStudio.
 2. Open `cesgen-health-data-r.Rproj` in RStudio. Always run scripts from the repository root. / Abre la carpeta como proyecto y ejecuta siempre desde la raíz.
 3. Install the packages: `source("install_packages.R")`.
+3b. Optional, exact versions: `install.packages("renv"); renv::restore()` uses `renv.lock` (versions used to verify the course). `install_packages.R` installs the latest versions instead. / Opcional, versiones exactas: `renv::restore()` usa `renv.lock`; `install_packages.R` instala las últimas versiones.
 4. Generate the simulated data (once; scripts also do it automatically when needed): `source("data-sim/00_generate_all.R")`.
 5. Open a lesson script from `lessons/` and run it line by line. / Abre el script de una lección y ejecútalo línea a línea.
 

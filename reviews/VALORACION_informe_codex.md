@@ -46,3 +46,31 @@ The reviewer could not finish `devtools::check()` within its session limit and r
 ## Status
 
 Accepted fixes 1, 3, 4, 5 and T are applied, with regression tests for 1 and 4. Because a High finding was fixed, a second review round with a fresh Codex session follows. Item 2 is waiting for David.
+
+---
+
+# Round 2 (fresh Codex session) - 2026-11-08
+
+Report assessed: `reviews/REVISION_CODEX_repo_20261108_ronda2.md`. Codex was told not to read the round 1 report or this assessment. **No High finding.** It confirmed independently that the PheWAS fix works (strata with few events are labelled, no infinite odds ratios), that L13 does not reuse the test set, and that the package check gives 0/0/0.
+
+| # | Codex severity | Finding | Decision | Decides |
+|---|---|---|---|---|
+| 6 | Medium | `renv.lock` exists but neither the README nor CI restores it | **Accept in part**: label and document; CI unchanged | David (policy) |
+| 7 | Low | Generators fail or return invalid data at tiny sizes | **Accept** | Claude |
+| 8 | Low | Anchor `ref`/`alt` hide that some rsIDs are multi-allelic | **Accept** (note, no rename) | Claude |
+
+## 6. renv lockfile not used - accepted in part
+
+True: the README and CI use `install_packages.R` (latest CRAN versions) while `renv.lock` was written on macOS with R 4.6.1. Two reproducibility paths with one undocumented is confusing. Applied: `install_packages.R` and the README now say that the default path installs the latest versions and that `renv::restore()` reproduces the verified versions. Not applied: restoring the lockfile in CI. The lockfile was created on macOS arm64; on Linux, `renv::restore()` would compile sf and its dependencies from source, which is slow and may fail, and a CI that tests against current packages also warns us early when a new CRAN release breaks a lesson. Whether the course should pin versions for learners is a policy decision for David.
+
+## 7. Generator limits - accepted
+
+Reproduced all three: `simulate_consumer_file(n_snps = 5)` (invalid 'size'), `simulate_population(n = 10, n_snps = 7)` (cannot sample 8 causal SNPs), `simulate_areas(1, 1)` (NaN values and a warning). Each now stops with a short message; regression test added (`generators reject sizes that cannot work`), including the smallest valid call of each.
+
+## 8. Multi-allelic anchors - accepted
+
+Checked: dbSNP lists more than two alleles for rs1801133, rs4988235, rs12913832 and rs1805007, as Codex says. The chosen pair is compatible with a real alternative. Added a comment in `anchor_variants()`. Not renamed to `simulated_ref`/`simulated_alt`: that would change the lessons (L09, L10) and the content that mention `ref` and `alt`.
+
+## Status after round 2
+
+70/70 scripts pass, 118 test expectations pass (1 skipped: Quarto render, CLI not installed). No open High finding. Open for David: item 2 (quasi-Poisson comparison in L29/L30), item 6 (pin versions or not), and installing Quarto to test the two `.qmd` templates.

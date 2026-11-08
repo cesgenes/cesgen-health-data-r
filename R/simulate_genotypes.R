@@ -2,6 +2,8 @@
 
 #' Anchor variants: real rsIDs with their (GRCh37) coordinates, simulated genotypes
 #' Coordinates (GRCh37) checked against dbSNP (NCBI Variation API) on 2026-11-08.
+#' Some of these rsIDs are multi-allelic in dbSNP (for example rs1801133 is G/A/C). For teaching,
+#' one reference/alternative pair is chosen for each; this is not a full clinical annotation.
 anchor_variants <- function() {
   data.frame(
     rsid = c("rs1801133", "rs4988235", "rs12913832", "rs429358", "rs7412", "rs1805007"),
@@ -18,8 +20,11 @@ anchor_variants <- function() {
 #' @return invisibly, the data frame that was written
 simulate_consumer_file <- function(path, n_snps = 1500, seed = 2026,
                                    build = "GRCh37", nocall_rate = 0.01) {
-  set.seed(seed)
   anchors <- anchor_variants()
+  if (n_snps < nrow(anchors)) {
+    stop("n_snps must be at least ", nrow(anchors), " (the number of anchor variants).", call. = FALSE)
+  }
+  set.seed(seed)
   n_bg <- n_snps - nrow(anchors)
   chr_bg <- sample(as.character(c(1:22, "X", "MT")), n_bg, replace = TRUE,
                    prob = c(rep(1, 22), 0.5, 0.2))
@@ -60,6 +65,9 @@ simulate_consumer_file <- function(path, n_snps = 1500, seed = 2026,
 #' Three ancestry groups (labelled G1, G2, G3) differ in allele frequencies at some SNPs.
 #' @return list(geno, pheno, truth)
 simulate_population <- function(n = 3000, n_snps = 40, seed = 2026) {
+  if (n < 1 || n_snps < 8) {
+    stop("n must be at least 1 and n_snps at least 8 (8 causal SNPs are chosen).", call. = FALSE)
+  }
   set.seed(seed)
   group <- sample(c("G1", "G2", "G3"), n, replace = TRUE, prob = c(0.7, 0.2, 0.1))
   base_f <- runif(n_snps, 0.1, 0.5)
