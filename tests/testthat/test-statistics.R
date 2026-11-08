@@ -116,3 +116,15 @@ test_that("re-identification demo: the register and the release share the quasi-
   expect_identical(key(sim$register), key(sim$release))
   expect_false("person_id" %in% names(sim$release))
 })
+
+test_that("a quasi-Poisson model with offset recovers the planted rate ratios on the simulated areas", {
+  skip_if_not_installed("sf")
+  est <- t(vapply(1:60, function(sd) {
+    a <- sf::st_drop_geometry(simulate_areas(seed = sd))
+    coef(glm(cases ~ pm25 + deprivation + offset(log(population / 1000)),
+             data = a, family = quasipoisson))[c("pm25", "deprivation")]
+  }, numeric(2)))
+  # planted: log rate ratio 0.04 per unit of pm25 and 0.25 per unit of the deprivation index
+  expect_equal(mean(est[, "pm25"]), 0.04, tolerance = 0.25)
+  expect_equal(mean(est[, "deprivation"]), 0.25, tolerance = 0.1)
+})

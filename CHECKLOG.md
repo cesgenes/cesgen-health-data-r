@@ -176,3 +176,7 @@ No High finding (`reviews/REVISION_CODEX_repo_20261108_ronda2.md`; assessment at
 ## 12. First CI run (GitHub Actions, ubuntu-latest, 2026-11-08)
 
 Commit 5884028: the workflow `check` passed in 5 min 53 s on a clean Linux machine: system libraries, R release, Quarto, `install_packages.R`, data generation, all 70 lesson scripts and solutions, and `test_dir` with 119 expectations passed, 0 failed, 0 skipped (the Quarto render test ran there). Only warnings were GitHub notices about the Node.js 20 deprecation of `actions/checkout@v4` and an upcoming Ubuntu 26 label change.
+
+## 13. L29 count-model comparison (David's decision, 2026-11-08)
+
+Added section 5b to `lessons/L29_spatial_autocorrelation_regression.R`: a quasi-Poisson model with a log(population) offset, printed as rate ratios next to the linear and spatial models, plus Moran's I of its Pearson residuals. Result on the shipped areas: PM2.5 rate ratio 1.04 (1.01 to 1.06), deprivation 1.24 (1.16 to 1.32); planted values exp(0.04) = 1.04 and exp(0.25) = 1.28. Test added: over 60 simulated area sets the model recovers the planted log rate ratios. The "try this" tasks and the course content were not changed (they still compare OLS and SEM).

@@ -119,6 +119,25 @@ tab$upper <- exp(tab$estimate + 1.96 * tab$se)
 print(tab, digits = 3)
 stopifnot(all(is.finite(tab$estimate)), nrow(tab) == 6)
 
+# 5b. A count model for comparison. The outcome is a COUNT of cases and each area has a different
+# population, so a quasi-Poisson model with log(population) as an offset models the counts
+# directly. Its rate ratios are comparable with the ones above (per 1 unit of the covariate).
+pois <- glm(cases ~ pm25 + deprivation + offset(log(population / 1000)),
+            data = df, family = quasipoisson)
+pois_coef <- summary(pois)$coefficients[c("pm25", "deprivation"), , drop = FALSE]
+pois_tab <- data.frame(
+  model = "Quasi-Poisson", term = rownames(pois_coef), estimate = pois_coef[, "Estimate"],
+  se = pois_coef[, "Std. Error"], row.names = NULL, stringsAsFactors = FALSE
+)
+pois_tab$rate_ratio <- exp(pois_tab$estimate)
+pois_tab$lower <- exp(pois_tab$estimate - 1.96 * pois_tab$se)
+pois_tab$upper <- exp(pois_tab$estimate + 1.96 * pois_tab$se)
+print(pois_tab, digits = 3)
+print(moran_summary(residuals(pois, type = "pearson"), lw, "Quasi-Poisson residuals"))
+stopifnot(all(is.finite(pois_tab$estimate)))
+# The linear model on the log rate and the count model should tell a similar story here; the
+# count model is the one that matches how a count of cases is produced, and it needs no 0.5.
+
 # 6. Cautions: small samples and the modifiable areal unit problem -------------------------------
 # 6a. Small samples: fit the same OLS on 200 random subsets of 40 areas.
 set.seed(2026)
