@@ -140,7 +140,7 @@ None of the `content_*.py` files was edited.
 
 ## 7. Open issues
 
-1. Quarto is not installed here, so the two `.qmd` templates are unrendered. Decision for David: install Quarto (Homebrew cask `quarto`).
+1. Quarto is not installed on this Mac. The Quarto render test of `templates/report_template.qmd` ran and passed in GitHub Actions (see section 12); `templates/final_project/report_skeleton.qmd` is not covered by the test.
 2. `ensure_sim_data()` only checks that `patients_clean.csv` exists. After a change to a generator, stale files in `data-sim/out/` are not regenerated (this happened with the rs1805007 fix and made L09 fail until the folder was deleted). Proposed fix: delete `data-sim/out/` after changing a generator, or add a seed and version stamp. Not changed.
 3. Lintr style findings (662) are not fixed.
 4. `renv::init()` was not run (disk space); only the lockfile exists.
@@ -168,8 +168,11 @@ No High finding (`reviews/REVISION_CODEX_repo_20261108_ronda2.md`; assessment at
 
 ## 11. Open questions for David
 
-1. Quarto is not installed here: install it (Homebrew cask `quarto`) so that the two `.qmd` templates can be rendered and tested?
+1. Quarto is not installed on this Mac: install it (Homebrew cask `quarto`) to render the templates locally? (CI already renders `report_template.qmd`.)
 2. L29/L30: add a quasi-Poisson-with-offset comparison next to the linear and spatial models (recommended), keep as is, or add only a limitation note?
 3. Pin package versions for learners with `renv::restore()` as the main route, or keep latest versions (current)?
 4. L14: soften "may be less accurate" or plant a real effect difference between groups (section 6)?
-5. The GitHub workflow has not run yet; it will run on the first push and may need adjustments.
+
+## 12. First CI run (GitHub Actions, ubuntu-latest, 2026-11-08)
+
+Commit 5884028: the workflow `check` passed in 5 min 53 s on a clean Linux machine: system libraries, R release, Quarto, `install_packages.R`, data generation, all 70 lesson scripts and solutions, and `test_dir` with 119 expectations passed, 0 failed, 0 skipped (the Quarto render test ran there). Only warnings were GitHub notices about the Node.js 20 deprecation of `actions/checkout@v4` and an upcoming Ubuntu 26 label change.
