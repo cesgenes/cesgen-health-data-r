@@ -49,4 +49,4 @@ CESGEN's GitHub account for course code: https://github.com/cesgenes. The reposi
 
 ## Licence / Licencia
 
-**Pending decision** (see `LICENSE_PENDING.md`). Until a licence is chosen, all rights are reserved by CESGEN. / **Pendiente de decisión.** Hasta entonces, todos los derechos reservados por CESGEN.
+The code and the simulated-data scripts in this repository are released under the MIT licence (see `LICENSE`). The course itself (slides, notes, videos, quizzes) is not covered by this licence and remains the property of CESGEN. / El código y los scripts de datos simulados de este repositorio se publican con licencia MIT (ver `LICENSE`). El curso (diapositivas, notas, vídeos, cuestionarios) no está cubierto por esta licencia y sigue siendo propiedad de CESGEN.
