@@ -43,9 +43,9 @@
 - Every figure from simulated data carries the caption "Simulated data for teaching purposes". / Toda figura con datos simulados lleva el pie «Datos simulados con fin didáctico».
 - A statistical result is not a clinical conclusion: state the assumption, the alternative and the source. / Un resultado estadístico no es una conclusión clínica.
 
-## Where it lives / Dónde estará
+## Where it lives / Dónde está
 
-CESGEN's GitHub account for course code: https://github.com/cesgenes. The repository name is **to be confirmed**; until then this folder is a local draft. / Cuenta de GitHub de CESGEN para el código de los cursos: https://github.com/cesgenes. El nombre del repositorio está **por confirmar**; hasta entonces esta carpeta es un borrador local.
+The code is published in CESGEN's GitHub organisation for course code: https://github.com/cesgenes/cesgen-health-data-r / El código está publicado en la organización de GitHub de CESGEN para el código de los cursos: https://github.com/cesgenes/cesgen-health-data-r
 
 ## Licence / Licencia
 
