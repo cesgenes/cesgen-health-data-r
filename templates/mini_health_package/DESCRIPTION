@@ -1,0 +1,21 @@
+Package: riskkit
+Title: Small Helpers to Turn Odds Ratios into Absolute Risks
+Version: 0.0.1
+Authors@R:
+    person("Course", "Author", email = "author@example.org",
+           role = c("aut", "cre"))
+Description: A deliberately tiny teaching package that converts odds ratios
+    into absolute risks, given a baseline risk. It accompanies the lessons on
+    building R packages for health analyses and shows the standard layout:
+    documented functions, input validation, an S3 print method, tests and a
+    reproducible example data script. All data are simulated for teaching
+    purposes and the package is not intended for clinical use.
+License: MIT + file LICENSE
+Language: en-GB
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.0.0)
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

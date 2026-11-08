@@ -1,0 +1,132 @@
+---
+title: "Final project: write your title here"
+subtitle: "Health Data Analysis with R"
+author: "Your name"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+*Simulated data for teaching purposes. Educational material; it does not replace a health
+professional.*
+
+How to use this skeleton: copy it to `report.qmd` in this folder, replace every
+`(WRITE: ...)` with your own text, change the data chunk to your dataset (D1 to D7 in
+`README.md`) and render. The default chunks use dataset D1 so that the file renders as it is.
+
+## 1. Question and scope
+
+(WRITE: one specific question. Say what result would count as a yes and what as a no. Say what
+you will not claim, for example anything causal or clinical.)
+
+## 2. Data
+
+| Item | Your answer |
+|---|---|
+| Dataset id and files | (WRITE: for example D1, population_pheno.csv and population_genotypes.csv) |
+| Source and how it was generated | (WRITE: simulated by data-sim/00_generate_all.R with a fixed seed) |
+| Licence or conditions of use | (WRITE: the repository's simulated data; for any real resource you mention, state that access and licence must be checked) |
+| Privacy | (WRITE: no real person; which columns could identify someone if the data were real; k of any table you would share) |
+| Groups in the data | (WRITE: which groups exist and how many people each has) |
+
+```{r}
+#| label: setup
+#| include: false
+
+# Find the repository root (the folder that contains R/helpers_general.R)
+root <- normalizePath(".")
+while (!file.exists(file.path(root, "R", "helpers_general.R")) && dirname(root) != root) {
+  root <- dirname(root)
+}
+stopifnot(file.exists(file.path(root, "R", "helpers_general.R")))
+source(file.path(root, "R", "helpers_general.R"))
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+set.seed(2026)
+```
+
+```{r}
+#| label: read-data
+
+# CHANGE THIS CHUNK to read your dataset. Default: D1 (population with groups G1 to G3).
+data_dir <- file.path(root, "data-sim", "out")
+if (!file.exists(file.path(data_dir, "population_pheno.csv"))) {
+  stop("Simulated data not found. From the repository root run: ",
+       "source('R/helpers_general.R'); ensure_sim_data()")
+}
+dat <- read.csv(file.path(data_dir, "population_pheno.csv"), stringsAsFactors = FALSE)
+glimpse(dat)
+```
+
+## 3. Methods
+
+(WRITE: the steps in order. Say where you split the data, what you selected or tuned inside the
+training part, how many tests you ran and which correction you used, and which software.)
+
+```{r}
+#| label: partition
+
+# Example: split BEFORE exploring or selecting anything. Keep the evaluation part for the end.
+dat$part <- sample(c("train", "valid", "eval"), nrow(dat), replace = TRUE,
+                   prob = c(0.6, 0.2, 0.2))
+table(dat$part)
+```
+
+## 4. Results
+
+```{r}
+#| label: tbl-main
+#| tbl-cap: "(WRITE: caption.) Simulated data for teaching purposes."
+
+# Example: size and outcome rate by group (replace with your main result)
+main_table <- dat %>%
+  group_by(group) %>%
+  summarise(n = n(), mean_trait = round(mean(trait), 2),
+            disease_rate = round(mean(disease), 3), .groups = "drop")
+kable(main_table)
+```
+
+(WRITE: what @tbl-main shows, in one or two sentences, and the assumption behind your reading.)
+
+```{r}
+#| label: fig-main
+#| fig-cap: "(WRITE: caption.) Simulated data for teaching purposes."
+#| fig-width: 6
+#| fig-height: 4
+
+ggplot(dat, aes(group, trait)) +
+  geom_boxplot(fill = cesgen_blue[["light"]]) +
+  labs(x = "Group", y = "Trait", caption = sim_caption()) +
+  theme_cesgen()
+```
+
+## 5. Equity and bias audit
+
+(WRITE: who is in the data and who is missing; how each variable was measured and whether
+measurement could differ by group; results by group with sample size and uncertainty; what the
+audit cannot show.)
+
+## 6. Conclusions and limits
+
+(WRITE: what you can claim, in one paragraph, with the evidence for each claim. Then the limits:
+association is not cause; the data are simulated; what would change your conclusion.)
+
+## 7. Reproducibility
+
+(WRITE: how to regenerate this report in one step, which seed you used and where the data come from.)
+
+```{r}
+#| label: session-info
+
+sessionInfo()
+```

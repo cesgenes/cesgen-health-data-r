@@ -1,0 +1,10 @@
+*.html
+.DS_Store
+.RData
+.Renviron
+.Rhistory
+.Rproj.user/
+data-sim/out/
+output/
+renv/
+renv/library/

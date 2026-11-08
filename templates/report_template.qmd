@@ -1,0 +1,128 @@
+---
+title: "Group audit of a simulated genetic score"
+subtitle: "Reproducible report template (course: Health Data Analysis with R)"
+author: "Your name"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Purpose and data statement
+
+This report is a template. Replace the text in each section with your own. It shows the minimum
+structure of a reproducible report: question, data, methods, results, limits and session
+information, all produced from one file.
+
+**Simulated data for teaching purposes.** No real person is described. The groups G1 to G3 are
+labels of simulated groups, not real populations. *Educational material; it does not replace a
+health professional.*
+
+**Question.** In the simulated population, how do the size and the outcome rate of each group
+compare, and what does that mean for how far a score built on this data can be trusted?
+
+## Methods
+
+```{r}
+#| label: setup
+#| include: false
+
+# Find the repository root (the folder that contains R/helpers_general.R), wherever this
+# file is rendered from.
+root <- normalizePath(".")
+while (!file.exists(file.path(root, "R", "helpers_general.R")) && dirname(root) != root) {
+  root <- dirname(root)
+}
+stopifnot(file.exists(file.path(root, "R", "helpers_general.R")))
+source(file.path(root, "R", "helpers_general.R"))
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+set.seed(2026)   # fix the seed even if nothing random is used yet
+```
+
+```{r}
+#| label: read-data
+
+data_file <- file.path(root, "data-sim", "out", "population_pheno.csv")
+if (!file.exists(data_file)) {
+  stop("Simulated data not found. From the repository root run: ",
+       "source('R/helpers_general.R'); ensure_sim_data()")
+}
+dat <- read.csv(data_file, stringsAsFactors = FALSE)
+stopifnot(all(c("patient_id", "group", "trait", "disease") %in% names(dat)))
+```
+
+The file `population_pheno.csv` has `r nrow(dat)` simulated people. It is regenerated from a fixed
+seed by `data-sim/00_generate_all.R`, so anyone can reproduce it.
+
+## Results
+
+```{r}
+#| label: tbl-groups
+#| tbl-cap: "Size, mean trait and disease rate by simulated group. Simulated data for teaching purposes."
+
+group_table <- dat %>%
+  group_by(group) %>%
+  summarise(n = n(),
+            share = round(n() / nrow(dat), 3),
+            mean_trait = round(mean(trait), 2),
+            disease_rate = round(mean(disease), 3),
+            .groups = "drop")
+# Save the table too, so the result can be compared between two renderings
+dir.create(file.path(root, "output"), showWarnings = FALSE)
+write.csv(group_table, file.path(root, "output", "report_table.csv"), row.names = FALSE)
+
+kable(group_table)
+```
+
+@tbl-groups shows how many people each group contributes. A group with few people gives
+estimates with wide uncertainty, which matters before any group comparison.
+
+```{r}
+#| label: fig-trait
+#| fig-cap: "Distribution of the simulated trait by group. Simulated data for teaching purposes."
+#| fig-width: 6
+#| fig-height: 4
+
+ggplot(dat, aes(group, trait)) +
+  geom_boxplot(fill = cesgen_blue[["light"]]) +
+  labs(x = "Simulated group", y = "Trait (arbitrary units)", caption = sim_caption()) +
+  theme_cesgen()
+```
+
+@fig-trait compares the trait distribution across the three groups. (Write here what you
+see, in one or two sentences, and state the assumption behind your reading.)
+
+## Limitations and equity
+
+- The data are simulated: nothing here is a clinical conclusion about real people.
+- (Add: who is missing or under-represented in your data, and how the measurement was made.)
+- (Add: what you did not check, and what would change your conclusion.)
+
+## Reproducibility
+
+To regenerate this report in one step, from the repository root:
+
+```{r}
+#| label: how-to-render
+#| eval: false
+
+quarto::quarto_render("templates/report_template.qmd")
+```
+
+Session information at the time of rendering:
+
+```{r}
+#| label: session-info
+
+sessionInfo()
+```
