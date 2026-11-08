@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       R_KEEP_PKG_SOURCE: yes
-      CESGEN_ARTIFACT_DIR: ${{ runner.temp }}/rendered-reports
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +36,9 @@ jobs:
         run: Rscript tests/run_all_lessons.R
 
       - name: Run the tests
-        run: Rscript -e 'testthat::test_dir("tests/testthat")'
+        run: |
+          export CESGEN_ARTIFACT_DIR="$RUNNER_TEMP/rendered-reports"
+          Rscript -e 'testthat::test_dir("tests/testthat")'
 
       - name: Keep the rendered reports to read them
         if: always()
